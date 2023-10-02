@@ -137,3 +137,4 @@ namespace PhysicsEngine
 // Fix collision detection bugs
 // Fix physics world memory leaks
 // Fix physics world stability issues
+// Fix physics world bugs
