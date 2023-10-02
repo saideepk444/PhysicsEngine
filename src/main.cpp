@@ -70,3 +70,4 @@ int main()
 // Add memory optimization
 // Add performance monitoring
 // Add error handling improvements
+// Add debugging features
