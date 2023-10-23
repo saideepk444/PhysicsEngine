@@ -35,3 +35,4 @@ namespace PhysicsEngine
 // Improve sphere collider
 // Improve sphere collider precision
 // Improve sphere collider performance
+// Enhance sphere collider accuracy
