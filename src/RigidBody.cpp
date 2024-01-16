@@ -104,3 +104,4 @@ namespace PhysicsEngine
 // Update rigid body physics
 // Update rigid body system
 // Update rigid body physics
+// Improve rigid body stability
