@@ -48,3 +48,4 @@ target_link_libraries(${PROJECT_NAME}
     ${GLU_LIBRARIES}
 ) # Updated build configuration
 # Improve build system
+# Update build configuration
