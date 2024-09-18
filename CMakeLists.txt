@@ -47,3 +47,4 @@ target_link_libraries(${PROJECT_NAME}
     Eigen3::Eigen
     ${GLU_LIBRARIES}
 ) # Updated build configuration
+# Improve build system
