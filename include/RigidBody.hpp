@@ -64,4 +64,4 @@ namespace PhysicsEngine
         std::shared_ptr<Collider> mCollider;
     };
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Update rigid body interface
