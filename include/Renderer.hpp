@@ -36,4 +36,4 @@ namespace PhysicsEngine
         float mCameraFOV;
     };
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Enhance renderer capabilities
