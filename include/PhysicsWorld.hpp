@@ -29,4 +29,4 @@ namespace PhysicsEngine
         int mIterations; // Constraint solver iterations
     };
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Update physics world interface
