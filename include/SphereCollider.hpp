@@ -30,4 +30,4 @@ namespace PhysicsEngine
         CollisionInfo checkSphereCollision(const std::shared_ptr<SphereCollider> &other) const;
     };
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Add sphere collider improvements
