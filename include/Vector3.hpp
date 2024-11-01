@@ -46,4 +46,4 @@ namespace PhysicsEngine
             return a.cross(b);
         }
     }
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Update vector operations
