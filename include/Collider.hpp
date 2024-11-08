@@ -49,4 +49,4 @@ namespace PhysicsEngine
         std::shared_ptr<RigidBody> rigidBody;
     };
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Add collision detection improvements
