@@ -178,4 +178,4 @@ namespace PhysicsEngine
         glfwPollEvents();
     }
 
-} // namespace PhysicsEngine
+} // namespace PhysicsEngine// Performance optimization
