@@ -130,4 +130,4 @@ namespace PhysicsEngine
             }
         }
     }
-}
+}// Add error handling improvements
