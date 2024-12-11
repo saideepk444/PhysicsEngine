@@ -46,4 +46,4 @@ target_link_libraries(${PROJECT_NAME}
     glfw
     Eigen3::Eigen
     ${GLU_LIBRARIES}
-) 
+) # Updated build configuration
