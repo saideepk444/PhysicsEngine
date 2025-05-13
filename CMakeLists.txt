@@ -8,21 +8,36 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(GLU REQUIRED)
 
-# Add subdirectories
-add_subdirectory(src)
-add_subdirectory(tests)
+# Add source files
+set(SOURCES
+    src/RigidBody.cpp
+    src/PhysicsWorld.cpp
+    src/Renderer.cpp
+    src/main.cpp
+)
+
+# Add header files
+set(HEADERS
+    include/RigidBody.hpp
+    include/PhysicsWorld.hpp
+    include/Renderer.hpp
+    include/Collider.hpp
+    include/SphereCollider.hpp
+)
+
+# Create executable
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Include directories
-include_directories(
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${OPENGL_INCLUDE_DIRS}
     ${GLFW_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS}
 )
-
-# Main executable
-add_executable(${PROJECT_NAME} src/main.cpp)
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
@@ -30,4 +45,5 @@ target_link_libraries(${PROJECT_NAME}
     OpenGL::GL
     glfw
     Eigen3::Eigen
+    ${GLU_LIBRARIES}
 ) 
