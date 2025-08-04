@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Collider.hpp"
+#include <Eigen/Dense>
 
 namespace PhysicsEngine
 {
@@ -8,8 +9,8 @@ namespace PhysicsEngine
     class SphereCollider : public Collider
     {
     public:
-        SphereCollider(float radius = 1.0f)
-            : Collider(Type::Sphere), radius_(radius)
+        explicit SphereCollider(float radius)
+            : Collider(Type::Sphere), mRadius(radius)
         {
         }
 
@@ -19,11 +20,11 @@ namespace PhysicsEngine
         void updateBounds() override;
 
         // Sphere-specific methods
-        float getRadius() const { return radius_; }
-        void setRadius(float radius) { radius_ = radius; }
+        float getRadius() const { return mRadius; }
+        void setRadius(float radius) { mRadius = radius; }
 
     private:
-        float radius_;
+        float mRadius;
 
         // Helper functions for specific collision types
         CollisionInfo checkSphereCollision(const std::shared_ptr<SphereCollider> &other) const;

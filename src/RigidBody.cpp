@@ -2,82 +2,77 @@
 
 namespace PhysicsEngine
 {
+    RigidBody::RigidBody()
+        : mPosition(Eigen::Vector3f::Zero()),
+          mVelocity(Eigen::Vector3f::Zero()),
+          mForce(Eigen::Vector3f::Zero()),
+          mTorque(Eigen::Vector3f::Zero()),
+          mAngularVelocity(Eigen::Vector3f::Zero()),
+          mOrientation(Eigen::Quaternionf::Identity()),
+          mMass(1.0f),
+          mInverseMass(1.0f),
+          mInverseInertia(Eigen::Matrix3f::Identity()),
+          mIsDynamic(true),
+          mCollider(nullptr)
+    {
+    }
 
-    RigidBody::RigidBody(float mass_) : mass(mass_)
+    void RigidBody::setMass(float mass)
     {
         if (mass <= 0)
         {
-            mass = 1.0f;
+            mMass = 1.0f;
+            mInverseMass = 1.0f;
+            return;
         }
-        inverseMass = 1.0f / mass;
 
-        // Initialize state variables
-        position = Vector3::zero();
-        orientation = Eigen::Quaternionf::Identity();
-        linearVelocity = Vector3::zero();
-        angularVelocity = Vector3::zero();
+        mMass = mass;
+        mInverseMass = 1.0f / mass;
 
-        // Initialize forces and torques
-        force = Vector3::zero();
-        torque = Vector3::zero();
-
-        // Initialize inertia tensor (assuming cube shape initially)
-        float i = mass * 1.0f / 6.0f; // For a 1x1x1 cube
-        inertiaTensor = Eigen::Matrix3f::Identity() * i;
-        inverseInertiaTensor = inertiaTensor.inverse();
+        // Update inertia tensor (assuming sphere for simplicity)
+        float i = (2.0f / 5.0f) * mMass; // For a solid sphere
+        mInverseInertia = Eigen::Matrix3f::Identity() * (1.0f / i);
     }
 
     void RigidBody::integrate(float dt)
     {
+        if (!mIsDynamic)
+            return;
+
         // Update linear motion
-        Vector3 acceleration = force * inverseMass;
-        linearVelocity += acceleration * dt;
-        position += linearVelocity * dt;
+        Eigen::Vector3f acceleration = mForce * mInverseMass;
+        mVelocity += acceleration * dt;
+        mPosition += mVelocity * dt;
 
         // Update angular motion
-        Vector3 angularAcceleration(
-            inverseInertiaTensor * Eigen::Vector3f(torque.x, torque.y, torque.z));
-        angularVelocity += Vector3(
-                               angularAcceleration.x,
-                               angularAcceleration.y,
-                               angularAcceleration.z) *
-                           dt;
+        Eigen::Vector3f angularAcceleration = mInverseInertia * mTorque;
+        mAngularVelocity += angularAcceleration * dt;
 
-        // Update orientation
-        Eigen::Quaternionf spin(0, angularVelocity.x, angularVelocity.y, angularVelocity.z);
-        Eigen::Quaternionf orientationChange = spin * orientation * 0.5f * dt;
-        orientation.coeffs() += orientationChange.coeffs();
-        orientation.normalize();
+        // Update orientation using quaternion differential equation
+        Eigen::Quaternionf omega(0, mAngularVelocity.x(), mAngularVelocity.y(), mAngularVelocity.z());
+        Eigen::Quaternionf orientationDeriv = omega * mOrientation;
+        mOrientation.coeffs() += orientationDeriv.coeffs() * (dt * 0.5f);
+        mOrientation.normalize();
 
         // Clear forces for next frame
         clearForces();
         updateDerivedData();
     }
 
-    void RigidBody::applyForce(const Vector3 &f)
-    {
-        force += f;
-    }
-
-    void RigidBody::applyTorque(const Vector3 &t)
-    {
-        torque += t;
-    }
-
-    void RigidBody::applyForceAtPoint(const Vector3 &f, const Vector3 &point)
+    void RigidBody::applyForceAtPoint(const Eigen::Vector3f &force, const Eigen::Vector3f &point)
     {
         // Apply force
-        force += f;
+        applyForce(force);
 
         // Calculate torque: τ = r × F
-        Vector3 r = point - position;
-        torque += r.cross(f);
+        Eigen::Vector3f r = point - mPosition;
+        applyTorque(r.cross(force));
     }
 
-    Vector3 RigidBody::getPointVelocity(const Vector3 &point) const
+    Eigen::Vector3f RigidBody::getPointVelocity(const Eigen::Vector3f &point) const
     {
-        Vector3 r = point - position;
-        return linearVelocity + angularVelocity.cross(r);
+        Eigen::Vector3f r = point - mPosition;
+        return mVelocity + mAngularVelocity.cross(r);
     }
 
     Eigen::Matrix4f RigidBody::getTransformMatrix() const
@@ -85,36 +80,23 @@ namespace PhysicsEngine
         Eigen::Matrix4f transform = Eigen::Matrix4f::Identity();
 
         // Set rotation part
-        Eigen::Matrix3f rot = orientation.toRotationMatrix();
+        Eigen::Matrix3f rot = mOrientation.toRotationMatrix();
         transform.block<3, 3>(0, 0) = rot;
 
         // Set translation part
-        transform(0, 3) = position.x;
-        transform(1, 3) = position.y;
-        transform(2, 3) = position.z;
+        transform.block<3, 1>(0, 3) = mPosition;
 
         return transform;
-    }
-
-    void RigidBody::updateInertiaTensor()
-    {
-        // This is a simplified version - in a real engine, you'd update this based on the
-        // actual shape of the rigid body
-        float i = mass * 1.0f / 6.0f;
-        inertiaTensor = Eigen::Matrix3f::Identity() * i;
-        inverseInertiaTensor = inertiaTensor.inverse();
-    }
-
-    void RigidBody::clearForces()
-    {
-        force = Vector3::zero();
-        torque = Vector3::zero();
     }
 
     void RigidBody::updateDerivedData()
     {
         // Update any derived quantities that depend on position/orientation
-        // This is a placeholder for more complex implementations
+        if (mCollider)
+        {
+            mCollider->setCenter(mPosition);
+            mCollider->updateBounds();
+        }
     }
 
 } // namespace PhysicsEngine

@@ -26,7 +26,7 @@ namespace PhysicsEngine
             Capsule
         };
 
-        Collider(Type type) : type_(type) {}
+        explicit Collider(Type type) : mType(type) {}
         virtual ~Collider() = default;
 
         // Pure virtual functions for collision detection
@@ -35,7 +35,7 @@ namespace PhysicsEngine
         virtual void updateBounds() = 0;
 
         // Getters
-        Type getType() const { return type_; }
+        Type getType() const { return mType; }
         const Vector3 &getCenter() const { return center; }
         void setCenter(const Vector3 &newCenter) { center = newCenter; }
 
@@ -44,7 +44,7 @@ namespace PhysicsEngine
         std::shared_ptr<RigidBody> getRigidBody() const { return rigidBody; }
 
     protected:
-        Type type_;
+        Type mType;
         Vector3 center;
         std::shared_ptr<RigidBody> rigidBody;
     };

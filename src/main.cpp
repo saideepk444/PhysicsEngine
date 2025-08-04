@@ -6,6 +6,8 @@
 #include <chrono>
 #include <thread>
 
+using namespace PhysicsEngine;
+
 int main()
 {
     // Initialize physics world

@@ -5,30 +5,35 @@
 #include "PhysicsWorld.hpp"
 #include <Eigen/Dense>
 
-class Renderer
+namespace PhysicsEngine
 {
-public:
-    Renderer(int width = 1024, int height = 768);
-    ~Renderer();
 
-    bool initialize();
-    void render(const PhysicsWorld &world);
-    bool shouldClose() const;
-    void clear();
-    void swapBuffers();
+    class Renderer
+    {
+    public:
+        Renderer(int width = 1024, int height = 768);
+        ~Renderer();
 
-private:
-    void drawSphere(const Eigen::Vector3f &position, float radius);
-    void drawBox(const Eigen::Vector3f &position, const Eigen::Vector3f &dimensions);
-    void setupLighting();
-    void setupCamera();
+        bool initialize();
+        void render(const PhysicsWorld &world);
+        bool shouldClose() const;
+        void clear();
+        void swapBuffers();
 
-    GLFWwindow *mWindow;
-    int mWidth;
-    int mHeight;
+    private:
+        void drawSphere(const Eigen::Vector3f &position, float radius);
+        void drawBox(const Eigen::Vector3f &position, const Eigen::Vector3f &dimensions);
+        void setupLighting();
+        void setupCamera();
 
-    // Camera parameters
-    Eigen::Vector3f mCameraPos;
-    Eigen::Vector3f mCameraTarget;
-    float mCameraFOV;
-};
+        GLFWwindow *mWindow;
+        int mWidth;
+        int mHeight;
+
+        // Camera parameters
+        Eigen::Vector3f mCameraPos;
+        Eigen::Vector3f mCameraTarget;
+        float mCameraFOV;
+    };
+
+} // namespace PhysicsEngine

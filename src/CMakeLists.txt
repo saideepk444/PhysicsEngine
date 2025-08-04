@@ -18,4 +18,9 @@ target_link_libraries(PhysicsCore
 
 # Main executable
 add_executable(PhysicsDemo main.cpp)
-target_link_libraries(PhysicsDemo PRIVATE PhysicsCore) 
+target_link_libraries(PhysicsDemo 
+    PRIVATE 
+    PhysicsCore
+    ${OPENGL_LIBRARIES}
+    glfw
+) 

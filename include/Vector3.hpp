@@ -1,118 +1,49 @@
 #pragma once
 
-#include <cmath>
+#include <Eigen/Core>
 #include <iostream>
 
 namespace PhysicsEngine
 {
+    // Vector3 is now just an alias for Eigen::Vector3f
+    using Vector3 = Eigen::Vector3f;
 
-    class Vector3
+    // Utility functions that might be needed for compatibility
+    namespace Vector3Utils
     {
-    public:
-        float x, y, z;
-
-        // Constructors
-        Vector3() : x(0.0f), y(0.0f), z(0.0f) {}
-        Vector3(float x_, float y_, float z_) : x(x_), y(y_), z(z_) {}
-        Vector3(const Vector3 &v) : x(v.x), y(v.y), z(v.z) {}
-
-        // Basic vector operations
-        Vector3 operator+(const Vector3 &v) const
+        inline float distance(const Vector3 &a, const Vector3 &b)
         {
-            return Vector3(x + v.x, y + v.y, z + v.z);
+            return (b - a).norm();
         }
 
-        Vector3 operator-(const Vector3 &v) const
+        inline Vector3 zero()
         {
-            return Vector3(x - v.x, y - v.y, z - v.z);
+            return Vector3::Zero();
         }
 
-        Vector3 operator*(float scalar) const
+        inline float length(const Vector3 &v)
         {
-            return Vector3(x * scalar, y * scalar, z * scalar);
+            return v.norm();
         }
 
-        Vector3 operator/(float scalar) const
+        inline float lengthSquared(const Vector3 &v)
         {
-            return Vector3(x / scalar, y / scalar, z / scalar);
+            return v.squaredNorm();
         }
 
-        // Compound assignment operators
-        Vector3 &operator+=(const Vector3 &v)
+        inline Vector3 normalize(const Vector3 &v)
         {
-            x += v.x;
-            y += v.y;
-            z += v.z;
-            return *this;
+            return v.normalized();
         }
 
-        Vector3 &operator-=(const Vector3 &v)
+        inline float dot(const Vector3 &a, const Vector3 &b)
         {
-            x -= v.x;
-            y -= v.y;
-            z -= v.z;
-            return *this;
+            return a.dot(b);
         }
 
-        // Vector operations
-        float dot(const Vector3 &v) const
+        inline Vector3 cross(const Vector3 &a, const Vector3 &b)
         {
-            return x * v.x + y * v.y + z * v.z;
+            return a.cross(b);
         }
-
-        Vector3 cross(const Vector3 &v) const
-        {
-            return Vector3(
-                y * v.z - z * v.y,
-                z * v.x - x * v.z,
-                x * v.y - y * v.x);
-        }
-
-        float length() const
-        {
-            return std::sqrt(x * x + y * y + z * z);
-        }
-
-        float lengthSquared() const
-        {
-            return x * x + y * y + z * z;
-        }
-
-        void normalize()
-        {
-            float len = length();
-            if (len > 0)
-            {
-                x /= len;
-                y /= len;
-                z /= len;
-            }
-        }
-
-        Vector3 normalized() const
-        {
-            Vector3 result(*this);
-            result.normalize();
-            return result;
-        }
-
-        // Static utility functions
-        static float distance(const Vector3 &a, const Vector3 &b)
-        {
-            return (b - a).length();
-        }
-
-        static Vector3 zero()
-        {
-            return Vector3(0.0f, 0.0f, 0.0f);
-        }
-
-        // Stream operator for easy printing
-        friend std::ostream &operator<<(std::ostream &os, const Vector3 &v)
-        {
-            os << "Vector3(" << v.x << ", " << v.y << ", " << v.z << ")";
-            return os;
-        }
-    };
-
+    }
 } // namespace PhysicsEngine
